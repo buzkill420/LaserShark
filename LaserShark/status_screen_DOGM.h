@@ -272,22 +272,18 @@ static void lcd_implementation_status_screen() {
     
 #if ENABLED(ARMED_SWITCH)      //armed_switch option enabled  
 
-     if (techTemp < 15 || techTemp > 56 || laserTemp < 15 || laserTemp > 36 ){
-          lcd_setstatus("TEMP ERROR! DISARMED!");                  
+     if (techTemp < 15 || techTemp > 55 || laserTemp < 15 || laserTemp > 35 ){
+          lcd_setstatus(" TEMP ERROR!DISARMED!");                  
           u8g.drawBitmapP(LCD_LASER_BOX_X + 4, 8, LASER_ICON_BYTEWIDTH, LASER_ICON_HEIGHT, laseroff_bmp);
 
           if(techTemp < 15 || laserTemp < 15)   u8g.drawBitmapP(6,4, TEMP_ICON_WIDTH, TEMP_ICON_HEIGHT, TEMP_COLD_bmp); 
-          else   u8g.drawBitmapP(6,4, TEMP_ICON_WIDTH, TEMP_ICON_HEIGHT, TEMP_HOT_bmp); 
+           else   u8g.drawBitmapP(6,4, TEMP_ICON_WIDTH, TEMP_ICON_HEIGHT, TEMP_HOT_bmp); 
           
-          if(laserPower >0){
-             u8g.setPrintPos(LCD_LASER_BOX_X + 22, 9);
-             u8g.print(laserPower);
-             lcd_printPGM(PSTR("%")); 
-          }
-          else{
-            u8g.setPrintPos(LCD_LASER_BOX_X + 22, 9);
-            lcd_printPGM(PSTR("---%"));      
-          }                               
+          if(laserPower >0) fanSpeeds[1] = 0 ;                             //sets fan speed to 0 when TEMP Error occures
+         
+          u8g.setPrintPos(LCD_LASER_BOX_X + 22, 9);
+          lcd_printPGM(PSTR("---%"));      
+                                        
      }   
      else if(laserPower > 0 && digitalRead(ARMED_PIN) == HIGH){
           lcd_setstatus(" DANGER!Laser Firing!");
@@ -298,12 +294,12 @@ static void lcd_implementation_status_screen() {
           lcd_printPGM(PSTR("%")); 
           }        
      else if (laserPower > 0 && digitalRead(ARMED_PIN) == LOW) {
-          lcd_setstatus("    Laser Disarmed.    ");      
+          lcd_setstatus("    Laser Disarmed.    "); 
+          fanSpeeds[1] = 0 ;                                                      // sets laser power to 0 if key laser is disarmed, stops laser form refiring     
           u8g.drawBitmapP(12,8, LASER_ICON_BYTEWIDTH, LASER_ICON_HEIGHT, lockicon_bmp);                                      
           u8g.drawBitmapP(LCD_LASER_BOX_X + 4, 8, LASER_ICON_BYTEWIDTH, LASER_ICON_HEIGHT, laseroff_bmp);
           u8g.setPrintPos(LCD_LASER_BOX_X + 22, 9);
-          u8g.print(laserPower);
-          lcd_printPGM(PSTR("%")); 
+          lcd_printPGM(PSTR("---%"));
           }
      else {
           u8g.drawBitmapP(LCD_LASER_BOX_X + 4, 8, LASER_ICON_BYTEWIDTH, LASER_ICON_HEIGHT, laseroff_bmp);
