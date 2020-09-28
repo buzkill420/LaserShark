@@ -3,7 +3,9 @@ A customized firmware for CNC/3D printers forked from [Marlin](https://github.co
 
 I started this project due to the fact that there seemed to be very little support for LCD controls and SD-Card Printing through GRBL and Marlin has had quite a bit. Plus my experience with 3D printers VS Lasers, it was a small jump to make. Not sure how it will turn out in the end but it's the journey that's important, not the destination!
 
-As of 0.4.20b LaserShark only supports the 12864 [Full Graphic Smart Controller](https://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller) and has only been tested on an MKS 1.4 and a generic RAMPS 1.4, though it could easily be modified slightly to acomodate other boards in future using the same steps taken to configure Marlin.
+The files posted are ready to upload directly to an MKS 1.4. Any other boards will have to tweak at least pins_RAMPS.h for it to function correctly. If you need help feel free to ask.
+
+As of 0.4.20b LaserShark only supports the 12864 [Full Graphic Smart Controller](https://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller) and has only been tested on an MKS 1.4 and a generic RAMPS 1.4, though it could easily be modified slightly to accommodate other boards in future using the same steps taken to configure Marlin.
 
 Take a look in:
                     Configuration.h, 
