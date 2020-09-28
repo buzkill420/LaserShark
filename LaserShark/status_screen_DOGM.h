@@ -268,7 +268,8 @@ static void lcd_implementation_status_screen() {
            */
          const int16_t laserPower = (((fanSpeeds[1]+1)*100)/256);  
          const int16_t laserTemp = thermalManager.degHotend(0);
-         const int16_t techTemp = thermalManager.degBed();        
+         const int16_t techTemp = thermalManager.degBed();
+         const int16_t roomTemp = thermalManager.degChamber();      
     
 #if ENABLED(ARMED_SWITCH)      //armed_switch option enabled  
 
@@ -363,9 +364,14 @@ static void lcd_implementation_status_screen() {
            */
         if (techTemp >= TECH_MAX - TECH_TEMP_DIFF && laserTemp < TECH_HIGH_TEMP - LASER_TEMP_DIFF) fanSpeeds[0] -= TECH_THROTTLE_VALUE; //only if laser is at safe temperature will tech throttle itself to save itself
         
- }else if (laserPower == 0 && laserTemp > ROOM_TEMP + 5 )fanSpeeds[0] = TECH_LOW_POWER;  //sets tech to low when laser is powered off until reaches close to room temp
-  else fanSpeeds[0] = TECH_OFF_POWER;     
- 
+ }
+ #if ENABLED (ROOM_TEMP) 
+     else if (laserPower == 0 && laserTemp > ROOM_TEMP + 5 )fanSpeeds[0] = TECH_LOW_POWER;  //sets tech to low when laser is powered off until reaches close to room temp
+     else fanSpeeds[0] = TECH_OFF_POWER;     
+ #else
+     else if (laserPower == 0 && laserTemp > roomTemp + 5 )fanSpeeds[0] = TECH_LOW_POWER;  //sets tech to low when laser is powered off until reaches close to room temp
+     else fanSpeeds[0] = TECH_OFF_POWER; 
+ #endif
               
 #endif      
 
