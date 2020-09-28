@@ -1,5 +1,5 @@
 # LaserShark
-A customized firmware for CNC/3D printers forked from Marlin 1.1.9.1 specificly tageted towards TTL/PWM driven lasers /w Tech Cooling. ie. 'Endurence Lasers' or other similar builds.
+A customized firmware for CNC/3D printers forked from Marlin 1.1.9.1 specificly tageted towards TTL/PWM driven lasers /w Tech Cooling. ie. 'Endurence Lasers' or other similar products.
 
 As of 0.4.20b LaserShark only supports the 12864 Full Graphic Smart Controller and has only been tested on an MKS 1.4 and a generic RAMPS 1.4, though it could easily be modified slightly to acomodate other boards in future using the same steps taken to configure Marlin.
 
