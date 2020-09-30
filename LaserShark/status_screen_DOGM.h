@@ -280,8 +280,8 @@ static void lcd_implementation_status_screen() {
           if(techTemp < TECH_MIN || laserTemp < LASER_MIN)   u8g.drawBitmapP(6,4, TEMP_ICON_WIDTH, TEMP_ICON_HEIGHT, TEMP_COLD_bmp); 
           else   u8g.drawBitmapP(6,4, TEMP_ICON_WIDTH, TEMP_ICON_HEIGHT, TEMP_HOT_bmp); 
           
-          if(laserPower > 0) fanSpeeds[1] = 0 ;                             //Kills laser when ANY TEMP Error occures
-          if(techTemp > TECH_MAX) fanSpeeds[0] = 0 ;                        //kills Tech only when Tech temp is to high
+          if(laserPower > 0) fanSpeeds[1] = 0 ;                             //Sets Laser power to 0 when ANY TEMP Error occures
+          if(techTemp > TECH_MAX) fanSpeeds[0] = 0 ;                        //Sets Tech powwer to 0 ONLY if Tech temp is to high (stays on for overtemp laser)
           
           u8g.setPrintPos(LCD_LASER_BOX_X + 22, 9);
           lcd_printPGM(PSTR("---%"));      
@@ -365,6 +365,8 @@ static void lcd_implementation_status_screen() {
         if (techTemp >= TECH_MAX - TECH_TEMP_DIFF && laserTemp < TECH_HIGH_TEMP - LASER_TEMP_DIFF) fanSpeeds[0] -= TECH_THROTTLE_VALUE; //only if laser is at safe temperature will tech throttle itself to save itself
         
  }
+
+
  #if ENABLED (ROOM_TEMP) 
      else if (laserPower == 0 && laserTemp > ROOM_TEMP + 5 )fanSpeeds[0] = TECH_LOW_POWER;  //sets tech to low when laser is powered off until reaches close to room temp
      else fanSpeeds[0] = TECH_OFF_POWER;     

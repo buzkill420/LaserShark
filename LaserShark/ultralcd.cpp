@@ -1100,7 +1100,8 @@ void lcd_quick_feedback(const bool clear_buttons) {
 
     void _lcd_user_menu() {
       START_MENU();
-      MENU_BACK("Control");
+      MENU_BACK("Info Screen");
+   #if !ENABLED(TECH_AUTO_COOLING)     
       #if defined(USER_DESC_1) && defined(USER_GCODE_1)
         MENU_ITEM(function, USER_DESC_1, lcd_user_gcode_1);
       #endif
@@ -1116,6 +1117,7 @@ void lcd_quick_feedback(const bool clear_buttons) {
       #if defined(USER_DESC_5) && defined(USER_GCODE_5)
         MENU_ITEM(function, USER_DESC_5, lcd_user_gcode_5);
       #endif
+   #endif  
       #if defined(USER_DESC_6) && defined(USER_GCODE_6)
         MENU_ITEM(function, USER_DESC_6, lcd_user_gcode_6);
       #endif
@@ -3558,7 +3560,7 @@ void lcd_quick_feedback(const bool clear_buttons) {
     #endif     */                                                                                            //mine
 
     //
-    // Fan Speed:
+    //  Tech power level
     //
     #if FAN_COUNT > 0
       #if HAS_FAN0
@@ -3579,15 +3581,21 @@ void lcd_quick_feedback(const bool clear_buttons) {
     #endif // FAN_COUNT > 0
 
     //
-    // Autotemp, Min, Max, Fact
+    // Autotemp control
     //
-    #if ENABLED(AUTOTEMP) && HAS_TEMP_HOTEND
+
+    #if ENABLED(TECH_AUTO_COOLING)
+      bool auto_temp_on;
+      MENU_ITEM_EDIT(bool, MSG_AUTOTEMP, &auto_temp_on);
+    #endif
+
+  /*  #if ENABLED(AUTOTEMP) && HAS_TEMP_HOTEND
       MENU_ITEM_EDIT(bool, MSG_AUTOTEMP, &planner.autotemp_enabled);
       MENU_ITEM_EDIT(float3, MSG_MIN, &planner.autotemp_min, 0, float(HEATER_0_MAXTEMP) - 15);
       MENU_ITEM_EDIT(float3, MSG_MAX, &planner.autotemp_max, 0, float(HEATER_0_MAXTEMP) - 15);
       MENU_ITEM_EDIT(float52, MSG_FACTOR, &planner.autotemp_factor, 0, 10);
     #endif
-
+*/
     //
     // PID-P, PID-I, PID-D, PID-C, PID Autotune
     // PID-P E1, PID-I E1, PID-D E1, PID-C E1, PID Autotune E1
@@ -3596,7 +3604,7 @@ void lcd_quick_feedback(const bool clear_buttons) {
     // PID-P E4, PID-I E4, PID-D E4, PID-C E4, PID Autotune E4
     // PID-P E5, PID-I E5, PID-D E5, PID-C E5, PID Autotune E5
     //
-    #if ENABLED(PIDTEMP)
+ /*   #if ENABLED(PIDTEMP)
 
       #define _PID_BASE_MENU_ITEMS(ELABEL, eindex) \
         raw_Ki = unscalePID_i(PID_PARAM(Ki, eindex)); \
@@ -3637,9 +3645,9 @@ void lcd_quick_feedback(const bool clear_buttons) {
         PID_MENU_ITEMS("", 0);
       #endif // !PID_PARAMS_PER_HOTEND || HOTENDS == 1
 
-    #endif // PIDTEMP
+    #endif // PIDTEMP */
 
-    #if DISABLED(SLIM_LCD_MENUS)
+  //  #if DISABLED(SLIM_LCD_MENUS)
       //
       // Preheat Material 1 conf
       //
@@ -3649,7 +3657,7 @@ void lcd_quick_feedback(const bool clear_buttons) {
       // Preheat Material 2 conf
       //
    //   MENU_ITEM(submenu, MSG_PREHEAT_2_SETTINGS, lcd_control_temperature_preheat_material2_settings_menu);
-    #endif
+  //  #endif
 
     END_MENU();
   }

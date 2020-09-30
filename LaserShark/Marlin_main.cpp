@@ -15217,6 +15217,21 @@ void stop() {
  */
 void setup() {
 
+//mine    
+      int myEraser = 7;
+      TCCR4B &= ~myEraser;
+      int myPrescaler = 1;                    
+      TCCR4B |= myPrescaler;          //sets timer4 (controls pin 8, 7, 6) prescale to 1 (aka sets pwm frequency to 31KHz
+//end of mine   
+
+/*
+prescaler = 1 ---> PWM frequency is 31000 Hz
+prescaler = 2 ---> PWM frequency is 4000 Hz
+prescaler = 3 ---> PWM frequency is 490 Hz (default value)
+prescaler = 4 ---> PWM frequency is 120 Hz
+prescaler = 5 ---> PWM frequency is 30 Hz
+prescaler = 6 ---> PWM frequency is <20 Hz
+ */
 
   #if ENABLED(MAX7219_DEBUG)
     max7219.init();
