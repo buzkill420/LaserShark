@@ -1555,7 +1555,7 @@
   #define USER_GCODE_1 "M106 P0 S0"  
   
   #define USER_DESC_2 "Tech 25%"
-  #define USER_GCODE_2 "M106 P0 S64"
+  #define USER_GCODE_2 "M106 P0 S128\n G4 P500\nM106 P0 S64" //jump starts the fans by boosting to 50% for 500ms.
 
   #define USER_DESC_3 "Tech 50%"
   #define USER_GCODE_3 "M106 P0 S128"

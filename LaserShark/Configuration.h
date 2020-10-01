@@ -152,14 +152,14 @@
 #define LASER_MAX 35
 #define LASER_MIN 10
 
-#define TECH_AUTO_COOLING      //uncomment to enable Auto tech cooling. power to tech will be controlled based on settings below 
+#define TECH_AUTO_COOLING      //uncomment to enable Auto tech cooling by default. power to tech will be controlled based on settings below, can still be enabled in Control>Temperature>Auto-Cooling> ON/OFF 
 
 #define TECH_HIGH_TEMP 30          // Temperatures that the tech will turn on at specified power
 #define TECH_MED_TEMP  25
 #define TECH_LOW_TEMP  20
 #define TECH_OFF_TEMP  15
 
-// #define ROOM_TEMP 20            // enable if you dont have third temp sensor.(t2) , when laser is off and close to room temp, tech turns off. prevents tech from staying on when room is hot and laser is off
+//#define ROOM_TEMP 20            // enable if you dont have third temp sensor.(t2) , when laser is off and close to room temp, tech turns off. prevents tech from staying on when room is hot and laser is off
 
 #define TECH_HIGH_POWER 255         //specified tech power levels
 #define TECH_MED_POWER  170

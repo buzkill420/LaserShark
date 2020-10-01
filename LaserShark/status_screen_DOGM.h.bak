@@ -26,8 +26,6 @@
  * Standard Status Screen for Graphical Display
  */
 
-#include "ultralcd.h"
-
 #ifndef _STATUS_SCREEN_DOGM_H_
 #define _STATUS_SCREEN_DOGM_H_
 
@@ -276,7 +274,7 @@ static void lcd_implementation_status_screen() {
 #if ENABLED(ARMED_SWITCH)      //armed_switch option enabled  
 
      if (techTemp < TECH_MIN || techTemp > TECH_MAX || laserTemp < LASER_MIN || laserTemp > LASER_MAX ){
-          lcd_setstatus("TEMP ERROR! DISARMED!");                  
+          lcd_setstatus(" TEMP ERROR!DISARMED!");                  
           u8g.drawBitmapP(LCD_LASER_BOX_X + 4, 8, LASER_ICON_BYTEWIDTH, LASER_ICON_HEIGHT, laseroff_bmp);
 
           if(techTemp < TECH_MIN || laserTemp < LASER_MIN)   u8g.drawBitmapP(6,4, TEMP_ICON_WIDTH, TEMP_ICON_HEIGHT, TEMP_COLD_bmp); 
@@ -350,7 +348,7 @@ static void lcd_implementation_status_screen() {
         } 
 #endif
 
-if (tech_auto == true){
+#if ENABLED(TECH_AUTO_COOLING)
 
  if (laserPower > 0 && laserTemp <= LASER_MAX){                                      // for when laser is on and warm 
   
@@ -377,7 +375,7 @@ if (tech_auto == true){
      else fanSpeeds[0] = TECH_OFF_POWER; 
  #endif
               
-}      
+#endif      
 
 //Laser Current
          u8g.setPrintPos(LCD_LASER_BOX_X + 22, 18);

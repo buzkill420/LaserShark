@@ -76,11 +76,6 @@
   #define MAX_MESSAGE_LENGTH CHARSIZE * (LCD_WIDTH)
 #endif
 
-#if ENABLED(TECH_AUTO_COOLING)              //added for auto tech cooling
-  static bool tech_auto = true;
-#else static bool tech_auto = false;
-#endif
-
 char lcd_status_message[MAX_MESSAGE_LENGTH + 1];
 uint8_t lcd_status_update_delay = 1, // First update one loop delayed
         lcd_status_message_level;    // Higher level blocks lower level
@@ -1106,7 +1101,7 @@ void lcd_quick_feedback(const bool clear_buttons) {
     void _lcd_user_menu() {
       START_MENU();
       MENU_BACK("Info Screen");
-   if (tech_auto == false){     
+   #if !ENABLED(TECH_AUTO_COOLING)     
       #if defined(USER_DESC_1) && defined(USER_GCODE_1)
         MENU_ITEM(function, USER_DESC_1, lcd_user_gcode_1);
       #endif
@@ -1122,7 +1117,7 @@ void lcd_quick_feedback(const bool clear_buttons) {
       #if defined(USER_DESC_5) && defined(USER_GCODE_5)
         MENU_ITEM(function, USER_DESC_5, lcd_user_gcode_5);
       #endif
-    }
+   #endif  
       #if defined(USER_DESC_6) && defined(USER_GCODE_6)
         MENU_ITEM(function, USER_DESC_6, lcd_user_gcode_6);
       #endif
@@ -3585,7 +3580,14 @@ void lcd_quick_feedback(const bool clear_buttons) {
       #endif
     #endif // FAN_COUNT > 0
 
-    MENU_ITEM_EDIT(bool , "Auto-Cooling", &tech_auto);         //Tech auto cooling on/off menu item
+    //
+    // Autotemp control
+    //
+
+    #if ENABLED(TECH_AUTO_COOLING)
+      bool auto_temp_on;
+      MENU_ITEM_EDIT(bool, MSG_AUTOTEMP, &auto_temp_on);
+    #endif
 
   /*  #if ENABLED(AUTOTEMP) && HAS_TEMP_HOTEND
       MENU_ITEM_EDIT(bool, MSG_AUTOTEMP, &planner.autotemp_enabled);
