@@ -310,7 +310,7 @@ static void lcd_implementation_status_screen() {
           u8g.setPrintPos(LCD_LASER_BOX_X + 22, 9);      
           lcd_printPGM(PSTR("---%"));
           if (digitalRead(ARMED_PIN) == HIGH){
-              lcd_setstatus("     Laser ARMED!    ");
+              lcd_setstatus("    Laser ARMED!    ");
               u8g.drawBitmapP(12,8, LASER_ICON_BYTEWIDTH, LASER_ICON_HEIGHT, unlockicon_bmp);
               }
           else if (digitalRead(ARMED_PIN) == LOW){
@@ -331,7 +331,8 @@ static void lcd_implementation_status_screen() {
           if(laserPower >0) fanSpeeds[1] = 0 ;                             //sets fan speed to 0 when TEMP Error occures
          
           u8g.setPrintPos(LCD_LASER_BOX_X + 22, 9);
-          lcd_printPGM(PSTR("---%"));                                            
+          lcd_printPGM(PSTR("---%"));      
+                                        
        }    
        else if (laserPower > 0) {
           lcd_setstatus(" DANGER!Laser Firing!");
@@ -389,7 +390,8 @@ if (tech_auto == true){
          lcd_printPGM(PSTR(LCD_STR_DEGREE));
         
     #endif  
-    
+
+
 }
 //end of mine
 

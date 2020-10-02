@@ -243,7 +243,7 @@
 //
 #define TEMP_0_PIN         13   // Analog Input
 //#define TEMP_1_PIN         15   // Analog Input
-#define TEMP_CHAMBER_PIN  15                         //  ROOM TEMP PIN
+#define TEMP_CHAMBER_PIN  15
 #define TEMP_BED_PIN       14   // Analog Input
 
 // SPI for Max6675 or Max31855 Thermocouple
@@ -277,15 +277,10 @@
   #define MOSFET_D_PIN     -1
 #endif
 #ifndef RAMPS_D8_PIN
-  #define RAMPS_D8_PIN      6       //redefined to get out of the way...still need for compiling, feel free to move to an unused pin.
+  #define RAMPS_D8_PIN      9
 #endif
-
-#if ENABLED(AIR_PUMP)
-  #define PUMP_PIN          9       //  used to power air-assist relay (12v/120v relay to enable 120v air pump)
-#endif
-
 #ifndef RAMPS_D9_PIN                            
-  #define RAMPS_D9_PIN      8        // = tech output 
+  #define RAMPS_D9_PIN      8        // = Tech output
 #endif
 #ifndef RAMPS_D10_PIN
   #define RAMPS_D10_PIN    10         // laser pin for generic Ramps1.4 based board
