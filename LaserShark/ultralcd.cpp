@@ -78,8 +78,14 @@
 
 #if ENABLED(TECH_AUTO_COOLING)              //added for auto tech cooling
   static bool tech_auto = true;
-#else static bool tech_auto = false;
+#else 
+  static bool tech_auto = false;
 #endif
+
+#if ENABLED(TECH_AUTO_COOLING)      //added for pump control
+static bool air_assist = false;
+#endif
+
 
 char lcd_status_message[MAX_MESSAGE_LENGTH + 1];
 uint8_t lcd_status_update_delay = 1, // First update one loop delayed
@@ -182,7 +188,10 @@ uint16_t max_display_update_time = 0;
   void lcd_move_menu();
   void lcd_control_menu();
   void lcd_control_temperature_menu();
+  void lcd_control_temperature_menu2();
   void lcd_control_motion_menu();
+  void _air_pump();
+  void _tech_auto();
 
   #if DISABLED(SLIM_LCD_MENUS)
     void lcd_control_temperature_preheat_material1_settings_menu();
@@ -3352,6 +3361,7 @@ void lcd_quick_feedback(const bool clear_buttons) {
     START_MENU();
     MENU_BACK(MSG_MAIN);
     MENU_ITEM(submenu, MSG_MOTION, lcd_control_motion_menu);
+    MENU_ITEM(submenu, MSG_TEMPERATURE, lcd_control_temperature_menu2);
 
      //
     // Disable Steppers
@@ -3529,136 +3539,40 @@ void lcd_quick_feedback(const bool clear_buttons) {
    * "Control" > "Temperature" submenu
    *
    */
-  void lcd_control_temperature_menu() {
+  void lcd_control_temperature_menu() {      // for when in "Control" menu
     START_MENU();
+    MENU_BACK("Control");    // ^ Control
 
-    //
-    // ^ Control
-    //
-    MENU_BACK("Control");
-
-    //
-    // Nozzle:
-    // Nozzle [1-5]:
-    //
-   /* #if HOTENDS == 1
-      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_NOZZLE, &thermalManager.target_temperature[0], 0, HEATER_0_MAXTEMP - 15, watch_temp_callback_E0);
-    #else // HOTENDS > 1
-      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_NOZZLE MSG_N1, &thermalManager.target_temperature[0], 0, HEATER_0_MAXTEMP - 15, watch_temp_callback_E0);
-      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_NOZZLE MSG_N2, &thermalManager.target_temperature[1], 0, HEATER_1_MAXTEMP - 15, watch_temp_callback_E1);
-      #if HOTENDS > 2
-        MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_NOZZLE MSG_N3, &thermalManager.target_temperature[2], 0, HEATER_2_MAXTEMP - 15, watch_temp_callback_E2);
-        #if HOTENDS > 3
-          MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_NOZZLE MSG_N4, &thermalManager.target_temperature[3], 0, HEATER_3_MAXTEMP - 15, watch_temp_callback_E3);
-          #if HOTENDS > 4
-            MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_NOZZLE MSG_N5, &thermalManager.target_temperature[4], 0, HEATER_4_MAXTEMP - 15, watch_temp_callback_E4);
-          #endif // HOTENDS > 4
-        #endif // HOTENDS > 3
-      #endif // HOTENDS > 2
-    #endif // HOTENDS > 1
-
-    //
-    // Bed:
-    //
-    #if HAS_HEATED_BED
-      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_BED, &thermalManager.target_temperature_bed, 0, BED_MAXTEMP - 15, watch_temp_callback_bed);
-    #endif     */                                                                                            //mine
-
-    //
-    //  Tech power level
-    //
-    #if FAN_COUNT > 0
-      #if HAS_FAN0
-        MENU_MULTIPLIER_ITEM_EDIT(int3, "Tech Cooler", &fanSpeeds[0], 0, 255);
-        #if ENABLED(EXTRA_FAN_SPEED)
-          MENU_MULTIPLIER_ITEM_EDIT(int3, MSG_EXTRA_FAN_SPEED FAN_SPEED_1_SUFFIX, &new_fanSpeeds[0], 3, 255);
-        #endif
-      #endif
-      
-      //fan1 moved to controls //mine
-     
-      #if HAS_FAN2
-        MENU_MULTIPLIER_ITEM_EDIT(int3, MSG_FAN_SPEED " 3", &fanSpeeds[2], 0, 255);
-        #if ENABLED(EXTRA_FAN_SPEED)
-          MENU_MULTIPLIER_ITEM_EDIT(int3, MSG_EXTRA_FAN_SPEED " 3", &new_fanSpeeds[2], 3, 255);
-        #endif
-      #endif
-    #endif // FAN_COUNT > 0
-
-    MENU_ITEM_EDIT(bool , "Auto-Cooling", &tech_auto);         //Tech auto cooling on/off menu item
-
-  /*  #if ENABLED(AUTOTEMP) && HAS_TEMP_HOTEND
-      MENU_ITEM_EDIT(bool, MSG_AUTOTEMP, &planner.autotemp_enabled);
-      MENU_ITEM_EDIT(float3, MSG_MIN, &planner.autotemp_min, 0, float(HEATER_0_MAXTEMP) - 15);
-      MENU_ITEM_EDIT(float3, MSG_MAX, &planner.autotemp_max, 0, float(HEATER_0_MAXTEMP) - 15);
-      MENU_ITEM_EDIT(float52, MSG_FACTOR, &planner.autotemp_factor, 0, 10);
+    if(tech_auto == false) MENU_MULTIPLIER_ITEM_EDIT(int3, "Tech Power", &fanSpeeds[0], 0, 255);       //  Tech power level
+    MENU_ITEM_EDIT_CALLBACK(bool , "Auto-Cooling", &tech_auto, _tech_auto);         //Tech auto cooling on/off menu item
+    #if ENABLED(AIR_PUMP)
+        MENU_ITEM_EDIT_CALLBACK(bool , "Air-Assist", &air_assist, _air_pump);         //Air pump on/off menu item
     #endif
-*/
-    //
-    // PID-P, PID-I, PID-D, PID-C, PID Autotune
-    // PID-P E1, PID-I E1, PID-D E1, PID-C E1, PID Autotune E1
-    // PID-P E2, PID-I E2, PID-D E2, PID-C E2, PID Autotune E2
-    // PID-P E3, PID-I E3, PID-D E3, PID-C E3, PID Autotune E3
-    // PID-P E4, PID-I E4, PID-D E4, PID-C E4, PID Autotune E4
-    // PID-P E5, PID-I E5, PID-D E5, PID-C E5, PID Autotune E5
-    //
- /*   #if ENABLED(PIDTEMP)
-
-      #define _PID_BASE_MENU_ITEMS(ELABEL, eindex) \
-        raw_Ki = unscalePID_i(PID_PARAM(Ki, eindex)); \
-        raw_Kd = unscalePID_d(PID_PARAM(Kd, eindex)); \
-        MENU_ITEM_EDIT(float52sign, MSG_PID_P ELABEL, &PID_PARAM(Kp, eindex), 1, 9990); \
-        MENU_ITEM_EDIT_CALLBACK(float52sign, MSG_PID_I ELABEL, &raw_Ki, 0.01f, 9990, copy_and_scalePID_i_E ## eindex); \
-        MENU_ITEM_EDIT_CALLBACK(float52sign, MSG_PID_D ELABEL, &raw_Kd, 1, 9990, copy_and_scalePID_d_E ## eindex)
-
-      #if ENABLED(PID_EXTRUSION_SCALING)
-        #define _PID_MENU_ITEMS(ELABEL, eindex) \
-          _PID_BASE_MENU_ITEMS(ELABEL, eindex); \
-          MENU_ITEM_EDIT(float3, MSG_PID_C ELABEL, &PID_PARAM(Kc, eindex), 1, 9990)
-      #else
-        #define _PID_MENU_ITEMS(ELABEL, eindex) _PID_BASE_MENU_ITEMS(ELABEL, eindex)
-      #endif
-
-      #if ENABLED(PID_AUTOTUNE_MENU)
-        #define PID_MENU_ITEMS(ELABEL, eindex) \
-          _PID_MENU_ITEMS(ELABEL, eindex); \
-          MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_PID_AUTOTUNE ELABEL, &autotune_temp[eindex], 150, heater_maxtemp[eindex] - 15, lcd_autotune_callback_E ## eindex)
-      #else
-        #define PID_MENU_ITEMS(ELABEL, eindex) _PID_MENU_ITEMS(ELABEL, eindex)
-      #endif
-
-      #if ENABLED(PID_PARAMS_PER_HOTEND) && HOTENDS > 1
-        PID_MENU_ITEMS(" " MSG_E1, 0);
-        PID_MENU_ITEMS(" " MSG_E2, 1);
-        #if HOTENDS > 2
-          PID_MENU_ITEMS(" " MSG_E3, 2);
-          #if HOTENDS > 3
-            PID_MENU_ITEMS(" " MSG_E4, 3);
-            #if HOTENDS > 4
-              PID_MENU_ITEMS(" " MSG_E5, 4);
-            #endif // HOTENDS > 4
-          #endif // HOTENDS > 3
-        #endif // HOTENDS > 2
-      #else // !PID_PARAMS_PER_HOTEND || HOTENDS == 1
-        PID_MENU_ITEMS("", 0);
-      #endif // !PID_PARAMS_PER_HOTEND || HOTENDS == 1
-
-    #endif // PIDTEMP */
-
-  //  #if DISABLED(SLIM_LCD_MENUS)
-      //
-      // Preheat Material 1 conf
-      //
-    //  MENU_ITEM(submenu, MSG_PREHEAT_1_SETTINGS, lcd_control_temperature_preheat_material1_settings_menu);
-
-      //
-      // Preheat Material 2 conf
-      //
-   //   MENU_ITEM(submenu, MSG_PREHEAT_2_SETTINGS, lcd_control_temperature_preheat_material2_settings_menu);
-  //  #endif
 
     END_MENU();
   }
+
+   void lcd_control_temperature_menu2() {         // for when in "settings" menu
+    START_MENU(); 
+    MENU_BACK("Settings");       // ^ Settings   
+    
+    if(tech_auto == false)MENU_MULTIPLIER_ITEM_EDIT(int3, "Tech Power", &fanSpeeds[0], 0, 255);   //  Tech power level
+    MENU_ITEM_EDIT_CALLBACK(bool , "Auto-Cooling", &tech_auto, _tech_auto);         //Tech auto cooling on/off menu item   
+    #if ENABLED(AIR_PUMP)
+        MENU_ITEM_EDIT_CALLBACK(bool , "Air-Assist", &air_assist, _air_pump);         //Air pump on/off menu item
+    #endif
+        
+    END_MENU();
+  }
+
+void _air_pump(){                                                   //enable 12v ouput on D9 to power a 12vdc/120vac relay to power air pump
+   if (air_assist == true)digitalWrite(PUMP_PIN, HIGH);
+   else if (air_assist == false)digitalWrite(PUMP_PIN, LOW);
+}
+
+void _tech_auto(){                                    // resets fanspeed when enabling auto cooling.
+    if (tech_auto == true) fanSpeeds[0] = 0;
+}
 
   #if DISABLED(SLIM_LCD_MENUS)
 
@@ -3678,7 +3592,7 @@ void lcd_quick_feedback(const bool clear_buttons) {
       #else
         #define MINTEMP_ALL HEATER_0_MINTEMP
         #define MAXTEMP_ALL HEATER_0_MAXTEMP
-      #endif
+      #endif                                                        
       START_MENU();
       MENU_BACK(MSG_TEMPERATURE);
       MENU_ITEM_EDIT(int3, MSG_FAN_SPEED, &lcd_preheat_fan_speed[material], 0, 255);
@@ -3800,23 +3714,6 @@ void lcd_quick_feedback(const bool clear_buttons) {
       MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_B, &planner.max_acceleration_mm_per_s2[B_AXIS], 100, 99000, _reset_acceleration_rates);
       MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_C, &planner.max_acceleration_mm_per_s2[C_AXIS], 10, 99000, _reset_acceleration_rates);
 
-    /*  #if ENABLED(DISTINCT_E_FACTORS)
-        MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_E, &planner.max_acceleration_mm_per_s2[E_AXIS + active_extruder], 100, 99000, _reset_acceleration_rates);
-        MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_E1, &planner.max_acceleration_mm_per_s2[E_AXIS], 100, 99000, _reset_e0_acceleration_rate);
-        MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_E2, &planner.max_acceleration_mm_per_s2[E_AXIS + 1], 100, 99000, _reset_e1_acceleration_rate);
-        #if E_STEPPERS > 2
-          MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_E3, &planner.max_acceleration_mm_per_s2[E_AXIS + 2], 100, 99000, _reset_e2_acceleration_rate);
-          #if E_STEPPERS > 3
-            MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_E4, &planner.max_acceleration_mm_per_s2[E_AXIS + 3], 100, 99000, _reset_e3_acceleration_rate);
-            #if E_STEPPERS > 4
-              MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_E5, &planner.max_acceleration_mm_per_s2[E_AXIS + 4], 100, 99000, _reset_e4_acceleration_rate);
-            #endif // E_STEPPERS > 4
-          #endif // E_STEPPERS > 3
-        #endif // E_STEPPERS > 2
-      #else
-        MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_E, &planner.max_acceleration_mm_per_s2[E_AXIS], 100, 99000, _reset_acceleration_rates);
-      #endif  */
-
       END_MENU();
     }
 
@@ -3850,22 +3747,6 @@ void lcd_quick_feedback(const bool clear_buttons) {
       MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_BSTEPS, &planner.axis_steps_per_mm[B_AXIS], 5, 9999, _planner_refresh_positioning);
       MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_CSTEPS, &planner.axis_steps_per_mm[C_AXIS], 5, 9999, _planner_refresh_positioning);
 
-   /*   #if ENABLED(DISTINCT_E_FACTORS)
-        MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_ESTEPS, &planner.axis_steps_per_mm[E_AXIS + active_extruder], 5, 9999, _planner_refresh_positioning);
-        MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_E1STEPS, &planner.axis_steps_per_mm[E_AXIS], 5, 9999, _planner_refresh_e0_positioning);
-        MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_E2STEPS, &planner.axis_steps_per_mm[E_AXIS + 1], 5, 9999, _planner_refresh_e1_positioning);
-        #if E_STEPPERS > 2
-          MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_E3STEPS, &planner.axis_steps_per_mm[E_AXIS + 2], 5, 9999, _planner_refresh_e2_positioning);
-          #if E_STEPPERS > 3
-            MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_E4STEPS, &planner.axis_steps_per_mm[E_AXIS + 3], 5, 9999, _planner_refresh_e3_positioning);
-            #if E_STEPPERS > 4
-              MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_E5STEPS, &planner.axis_steps_per_mm[E_AXIS + 4], 5, 9999, _planner_refresh_e4_positioning);
-            #endif // E_STEPPERS > 4
-          #endif // E_STEPPERS > 3
-        #endif // E_STEPPERS > 2
-      #else
-        MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_ESTEPS, &planner.axis_steps_per_mm[E_AXIS], 5, 9999, _planner_refresh_positioning);
-      #endif     */
 
       END_MENU();
     }

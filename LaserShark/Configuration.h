@@ -170,6 +170,8 @@
 #define LASER_TEMP_DIFF 5 
 #define TECH_THROTTLE_VALUE 32
 
+#define AIR_PUMP            //  enable if you have Air blower for laser, relay enabled on pin 9
+
 // @section extruder
 
 // This defines the number of extruders
