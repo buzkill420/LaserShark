@@ -310,9 +310,10 @@ void lcd_printPGM_utf(const char *str, uint8_t n=LCD_WIDTH) {
           
                u8g.setFont(u8g_font_tpssb);                //7x13B        
             u8g.drawStr(69,14,"NDURANC"); 
-               u8g.setFont(u8g_font_fixed_v0);  
-            u8g.drawStr(76,22,"Lasers");   
-               u8g.setFont(u8g_font_04b_03r);                       
+              // u8g.setFont(u8g_font_fixed_v0); 
+               u8g.setFont(u8g_font_04b_03r); 
+            u8g.drawStr(74,22,"Laser Lab");   
+                                    
             u8g.drawStr(68,35,"10W+ /w Tech");
             u8g.drawStr(78,45,BUZ_VERSION);          
             u8g.drawStr(75,60,"By BuZkill");
