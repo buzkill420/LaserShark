@@ -376,11 +376,11 @@ static void lcd_implementation_status_screen() {
      }
 
   #if ENABLED (ROOM_TEMP)  //when you dont have 3rd thermistor, uses setting for laser cooling
-     else if (laserPower == 0 && laserTemp > ROOM_TEMP + LASER_TEMP_DIFF )fanSpeeds[0] = TECH_LOW_POWER;  //sets tech to low when laser is powered off until reaches close to room temp
-     else fanSpeeds[0] = TECH_OFF_POWER;     
+     else if (laserPower == 0 && laserTemp > ROOM_TEMP + LASER_TEMP_DIFF ) fanSpeeds[0] = TECH_LOW_POWER;  //sets tech to low when laser is powered off until reaches close to room temp
+     else if (laserPower == 0 && laserTemp <= ROOM_TEMP + LASER_TEMP_DIFF ) fanSpeeds[0] = TECH_OFF_POWER;     
    #else  // for when you have 3rd thermistor, uses ambiant temperature of the room for laser cooling
-     else if (laserPower == 0 && laserTemp > roomTemp + LASER_TEMP_DIFF )fanSpeeds[0] = TECH_LOW_POWER;  //sets tech to low when laser is powered off until reaches close to room temp
-     else fanSpeeds[0] = TECH_OFF_POWER; 
+     else if (laserPower == 0 && laserTemp > roomTemp + LASER_TEMP_DIFF ) fanSpeeds[0] = TECH_LOW_POWER;  //sets tech to low when laser is powered off until reaches close to room temp
+     else if (laserPower == 0 && laserTemp <= roomTemp + LASER_TEMP_DIFF ) fanSpeeds[0] = TECH_OFF_POWER; 
    #endif
               
 }      
