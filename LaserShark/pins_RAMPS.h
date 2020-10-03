@@ -475,13 +475,13 @@
         #define BTN_EN1         17
         #define BTN_EN2         23
       #else
-        #define BTN_EN1         31
-        #define BTN_EN2         33
+        #define BTN_EN1         31  //              EXTRA BUTTON PINOUT ON BACK SIDE OF SCREEN    
+        #define BTN_EN2         33  //              EXTRA BUTTON PINOUT ON BACK SIDE OF SCREEN         
       #endif
 
-      #define BTN_ENC           35
+      #define BTN_ENC           35  //              EXTRA BUTTON PINOUT ON BACK SIDE OF SCREEN 
       #define SD_DETECT_PIN     49
-      #define KILL_PIN          41
+      #define KILL_PIN          41  //              EXTRA BUTTON PINOUT ON BACK SIDE OF SCREEN 
 
       #if ENABLED(BQ_LCD_SMART_CONTROLLER)
         #define LCD_BACKLIGHT_PIN 39

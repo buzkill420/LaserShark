@@ -3524,8 +3524,8 @@ void lcd_quick_feedback(const bool clear_buttons) {
   }
 
 void _air_pump(){                                                   //enable 12v ouput on D9 to power a 12vdc/120vac relay to power air pump
-   if (air_assist == true)digitalWrite(PUMP_PIN, HIGH);
-   else if (air_assist == false)digitalWrite(PUMP_PIN, LOW);
+   if (air_assist == true && fanSpeeds[1] > 0 )digitalWrite(PUMP_PIN, HIGH);
+   else if (air_assist == false || fanSpeeds[1] == 0)digitalWrite(PUMP_PIN, LOW);
 }
 
 void _tech_auto(){                                    // resets fanspeed when enabling auto cooling.

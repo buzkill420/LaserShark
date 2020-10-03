@@ -263,9 +263,10 @@ static void lcd_implementation_status_screen() {
         u8g.drawFrame(LCD_LASER_BOX_X, 0,51,28); // draw box
         
     #if ENABLED(AIR_PUMP)             // if airpump option is enabled
-        if(air_assist==true){
-          u8g.drawBitmapP(86,5, AIRPUMP_ICON_BYTEWIDTH, AIRPUMP_ICON_HEIGHT, airicon_bmp);      //draw air icon when air pump is on
-        }
+        if(air_assist == true && fanSpeeds[1] > 0 ){
+          digitalWrite(PUMP_PIN, HIGH);                               //ensures pin is set to high when laser is toggled
+          u8g.drawBitmapP(86,5, AIRPUMP_ICON_BYTEWIDTH, AIRPUMP_ICON_HEIGHT, airicon_bmp);      //draw air icon when air pump is on and option enabled
+        }else if (air_assist == false || fanSpeeds[1] == 0)digitalWrite(PUMP_PIN, LOW); //ensures pin is set to high when laser is toggled or option is disabled
     #endif
 
  //Laser Power %   TYPE HERE
@@ -357,7 +358,7 @@ static void lcd_implementation_status_screen() {
 
     if (tech_auto == true){
 
-      u8g.drawBitmapP(120, 0, AUTO_BYTEWIDTH, AUTO_HEIGHT, auto_bmp);    // draw "AUTO" next to TECH fan on info screen
+      u8g.drawBitmapP(119, -1, AUTO_BYTEWIDTH, AUTO_HEIGHT, auto_bmp);    // draw "AUTO" next to TECH fan on info screen
 
       if (laserPower > 0 && laserTemp <= LASER_MAX){                               //  when laser is on and warm 
   
