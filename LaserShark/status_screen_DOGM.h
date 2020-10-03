@@ -261,6 +261,12 @@ static void lcd_implementation_status_screen() {
     #if ENABLED(SPINDLE_LASER_ENABLE) 
         #define     LCD_LASER_BOX_X     35       //Horizontal position of the laser Box    
         u8g.drawFrame(LCD_LASER_BOX_X, 0,51,28); // draw box
+        
+    #if ENABLED(AIR_PUMP)             // if airpump option is enabled
+        if(air_assist==true){
+          u8g.drawBitmapP(86,5, AIRPUMP_ICON_BYTEWIDTH, AIRPUMP_ICON_HEIGHT, airicon_bmp);      //draw air icon when air pump is on
+        }
+    #endif
 
  //Laser Power %   TYPE HERE
             /* 
@@ -273,7 +279,7 @@ static void lcd_implementation_status_screen() {
          const int16_t techTemp = thermalManager.degBed();
          const int16_t roomTemp = thermalManager.degChamber();      
     
-#if ENABLED(ARMED_SWITCH)      //armed_switch option enabled  
+   #if ENABLED(ARMED_SWITCH)      //armed_switch option enabled  
 
      if (techTemp < TECH_MIN || techTemp > TECH_MAX || laserTemp < LASER_MIN || laserTemp > LASER_MAX ){
           lcd_setstatus("TEMP ERROR! DISARMED!");                  
@@ -319,7 +325,7 @@ static void lcd_implementation_status_screen() {
               }        
           }
    
-#else   // ARMED SWITCH option disabled
+  #else   // ARMED SWITCH option disabled
     
        if (techTemp < TECH_MIN || techTemp > TECH_MAX || laserTemp < LASER_MIN || laserTemp > LASER_MAX ){
           lcd_setstatus(" TEMP ERROR!DISARMED!");                  
@@ -347,34 +353,35 @@ static void lcd_implementation_status_screen() {
           lcd_printPGM(PSTR("---%"));
           lcd_setstatus("     Laser Ready.    ");
         } 
-#endif
+  #endif
 
-if (tech_auto == true){
+    if (tech_auto == true){
 
- if (laserPower > 0 && laserTemp <= LASER_MAX){                                      // for when laser is on and warm 
+      u8g.drawBitmapP(120, 0, AUTO_BYTEWIDTH, AUTO_HEIGHT, auto_bmp);    // draw "AUTO" next to TECH fan on info screen
+
+      if (laserPower > 0 && laserTemp <= LASER_MAX){                               //  when laser is on and warm 
   
-        if (laserTemp <= TECH_OFF_TEMP)  fanSpeeds[0] = TECH_OFF_POWER;             //turns off tech when laser reaches off temp
-        else if(laserTemp <= TECH_LOW_TEMP)  fanSpeeds[0] = TECH_LOW_POWER;         //sets tech to low
-        else if(laserTemp <= TECH_MED_TEMP)  fanSpeeds[0] = TECH_MED_POWER;         //sets tech to med
-        else if(laserTemp <= TECH_HIGH_TEMP)  fanSpeeds[0] = TECH_HIGH_POWER;       //sets tech to high
+        if (laserTemp <= TECH_OFF_TEMP)  fanSpeeds[0] = TECH_OFF_POWER;          //turns off tech when laser reaches off temp
+        else if(laserTemp <= TECH_LOW_TEMP)  fanSpeeds[0] = TECH_LOW_POWER;         //sets tech to low when laser reaches low temp
+        else if(laserTemp <= TECH_MED_TEMP)  fanSpeeds[0] = TECH_MED_POWER;         //sets tech to med when laser reaches medium temp
+        else if(laserTemp <= TECH_HIGH_TEMP)  fanSpeeds[0] = TECH_HIGH_POWER;       //sets tech to high when laser reaches high temp
           
            /*                                             
             *            line below was  added for TECH OVER TEMP SAFTY.
             *   if tech is getting close to over heating it will throttle itself but ONLY IF laser temp is at safe level 
             *                        comment out if not working or ajust values in config
            */
-        if (techTemp >= TECH_MAX - TECH_TEMP_DIFF && laserTemp < TECH_HIGH_TEMP - LASER_TEMP_DIFF) fanSpeeds[0] -= TECH_THROTTLE_VALUE; //only if laser is at safe temperature will tech throttle itself to save itself
+        if (techTemp >= TECH_MAX - TECH_TEMP_DIFF && laserTemp < TECH_HIGH_TEMP - LASER_TEMP_DIFF) fanSpeeds[0] -= TECH_THROTTLE_VALUE;   
         
- }
+     }
 
-
- #if ENABLED (ROOM_TEMP) 
-     else if (laserPower == 0 && laserTemp > ROOM_TEMP + 5 )fanSpeeds[0] = TECH_LOW_POWER;  //sets tech to low when laser is powered off until reaches close to room temp
+  #if ENABLED (ROOM_TEMP)  //when you dont have 3rd thermistor, uses setting for laser cooling
+     else if (laserPower == 0 && laserTemp > ROOM_TEMP + LASER_TEMP_DIFF )fanSpeeds[0] = TECH_LOW_POWER;  //sets tech to low when laser is powered off until reaches close to room temp
      else fanSpeeds[0] = TECH_OFF_POWER;     
- #else
-     else if (laserPower == 0 && laserTemp > roomTemp + 5 )fanSpeeds[0] = TECH_LOW_POWER;  //sets tech to low when laser is powered off until reaches close to room temp
+   #else  // for when you have 3rd thermistor, uses ambiant temperature of the room for laser cooling
+     else if (laserPower == 0 && laserTemp > roomTemp + LASER_TEMP_DIFF )fanSpeeds[0] = TECH_LOW_POWER;  //sets tech to low when laser is powered off until reaches close to room temp
      else fanSpeeds[0] = TECH_OFF_POWER; 
- #endif
+   #endif
               
 }      
 
@@ -388,7 +395,7 @@ if (tech_auto == true){
          u8g.print(laserTemp);                          
          lcd_printPGM(PSTR(LCD_STR_DEGREE));
         
-    #endif  
+#endif  
     
 }
 //end of mine
