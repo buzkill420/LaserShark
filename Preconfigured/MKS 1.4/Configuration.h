@@ -145,6 +145,32 @@
 // Enable this to add ARMED Switch interupt
 #define ARMED_SWITCH
 
+//Tech and Laser MAX/MIN Temps and TECH POWER settings
+
+#define TECH_MAX 50      //temps that will cause errors and laser to shut off/not power up
+#define TECH_MIN 10
+#define LASER_MAX 35
+#define LASER_MIN 10
+
+#define TECH_AUTO_COOLING      //uncomment to enable Auto tech cooling by default. power to tech will be controlled based on settings below, can still be enabled in Control>Temperature>Auto-Cooling> ON/OFF 
+
+#define TECH_HIGH_TEMP 30          // Temperatures that the tech will turn on at specified power
+#define TECH_MED_TEMP  25
+#define TECH_LOW_TEMP  20
+#define TECH_OFF_TEMP  15
+
+//#define ROOM_TEMP 20            // enable if you dont have third temp sensor.(t2) , when laser is off and close to room temp, tech turns off. prevents tech from staying on when room is hot and laser is off
+
+#define TECH_HIGH_POWER 255         //specified tech power levels
+#define TECH_MED_POWER  170
+#define TECH_LOW_POWER  85
+#define TECH_OFF_POWER  0
+
+#define TECH_TEMP_DIFF 15           // if Tech temp is = TECH_HIGH_TEMP - TECH_TEMP_DIFF , Tech power is throttled by TECH_THROTTLE_VALUE
+#define LASER_TEMP_DIFF 5 
+#define TECH_THROTTLE_VALUE 32
+
+#define AIR_PUMP            //  enable if you have Air blower for laser, relay enabled on pin 9
 
 // @section extruder
 
@@ -315,13 +341,13 @@
  *
  * :{ '0': "Not used", '1':"100k / 4.7k - EPCOS", '2':"200k / 4.7k - ATC Semitec 204GT-2", '3':"Mendel-parts / 4.7k", '4':"10k !! do not use for a hotend. Bad resolution at high temp. !!", '5':"100K / 4.7k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)", '501':"100K Zonestar (Tronxy X3A)", '6':"100k / 4.7k EPCOS - Not as accurate as Table 1", '7':"100k / 4.7k Honeywell 135-104LAG-J01", '8':"100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT", '9':"100k / 4.7k GE Sensing AL03006-58.2K-97-G1", '10':"100k / 4.7k RS 198-961", '11':"100k / 4.7k beta 3950 1%", '12':"100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT (calibrated for Makibox hot bed)", '13':"100k Hisens 3950  1% up to 300°C for hotend 'Simple ONE ' & hotend 'All In ONE'", '20':"PT100 (Ultimainboard V2.x)", '51':"100k / 1k - EPCOS", '52':"200k / 1k - ATC Semitec 204GT-2", '55':"100k / 1k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)", '60':"100k Maker's Tool Works Kapton Bed Thermistor beta=3950", '66':"Dyze Design 4.7M High Temperature thermistor", '70':"the 100K thermistor found in the bq Hephestos 2", '71':"100k / 4.7k Honeywell 135-104LAF-J01", '147':"Pt100 / 4.7k", '1047':"Pt1000 / 4.7k", '110':"Pt100 / 1k (non-standard)", '1010':"Pt1000 / 1k (non standard)", '-4':"Thermocouple + AD8495", '-3':"Thermocouple + MAX31855 (only for sensor 0)", '-2':"Thermocouple + MAX6675 (only for sensor 0)", '-1':"Thermocouple + AD595",'998':"Dummy 1", '999':"Dummy 2" }
  */
-#define TEMP_SENSOR_0 4
-#define TEMP_SENSOR_1 0
+#define TEMP_SENSOR_0 4             //laser temp
+#define TEMP_SENSOR_1 0             
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
 #define TEMP_SENSOR_4 0
-#define TEMP_SENSOR_BED 4
-#define TEMP_SENSOR_CHAMBER 0
+#define TEMP_SENSOR_BED 4           // Tech temp
+#define TEMP_SENSOR_CHAMBER 4       //room temp      place somewhere away from laser and heat source.(stable room temp)
 
 // Dummy thermistor constant temperature readings, for use with 998 and 999
 #define DUMMY_THERMISTOR_998_VALUE 25

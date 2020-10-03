@@ -138,7 +138,7 @@
 
 // Show Temperature ADC value
 // Enable for M105 to include ADC values read from temperature sensors.
-#define SHOW_TEMP_ADC_VALUES
+//#define SHOW_TEMP_ADC_VALUES
 
 /**
  * High Temperature Thermistor Support
@@ -592,7 +592,7 @@
 //#define LCD_DECIMAL_SMALL_XY
 
 // The timeout (in ms) to return to the status screen from sub-menus
-#define LCD_TIMEOUT_TO_STATUS 1200000
+#define LCD_TIMEOUT_TO_STATUS 5000
 
 // Add an 'M73' G-code to set the current percentage
 //#define LCD_SET_PROGRESS_MANUALLY
@@ -1555,7 +1555,7 @@
   #define USER_GCODE_1 "M106 P0 S0"  
   
   #define USER_DESC_2 "Tech 25%"
-  #define USER_GCODE_2 "M106 P0 S64"
+  #define USER_GCODE_2 "M106 P0 S128\n G4 P500\nM106 P0 S64" //jump starts the fans by boosting to 50% for 500ms.
 
   #define USER_DESC_3 "Tech 50%"
   #define USER_GCODE_3 "M106 P0 S128"

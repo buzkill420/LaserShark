@@ -242,7 +242,8 @@
 // Temperature Sensors
 //
 #define TEMP_0_PIN         13   // Analog Input
-#define TEMP_1_PIN         15   // Analog Input
+//#define TEMP_1_PIN         15   // Analog Input
+#define TEMP_CHAMBER_PIN  15      //  ROOM TEMP PIN
 #define TEMP_BED_PIN       14   // Analog Input
 
 // SPI for Max6675 or Max31855 Thermocouple
@@ -276,10 +277,15 @@
   #define MOSFET_D_PIN     -1
 #endif
 #ifndef RAMPS_D8_PIN
-  #define RAMPS_D8_PIN      9
+  #define RAMPS_D8_PIN      6       //redefined to get out of the way...still need for compiling, feel free to move to an unused pin.
 #endif
+
+#if ENABLED(AIR_PUMP)
+  #define PUMP_PIN          9       //  used to power air-assist relay (12v/120v relay to enable 120v air pump)
+#endif
+
 #ifndef RAMPS_D9_PIN                            
-  #define RAMPS_D9_PIN      8        // = Tech output
+  #define RAMPS_D9_PIN      8        // = tech output 
 #endif
 #ifndef RAMPS_D10_PIN
   #define RAMPS_D10_PIN    10         // laser pin for generic Ramps1.4 based board
@@ -469,13 +475,13 @@
         #define BTN_EN1         17
         #define BTN_EN2         23
       #else
-        #define BTN_EN1         31
-        #define BTN_EN2         33
+        #define BTN_EN1         31  //              EXTRA BUTTON PINOUT ON BACK SIDE OF SCREEN    
+        #define BTN_EN2         33  //              EXTRA BUTTON PINOUT ON BACK SIDE OF SCREEN         
       #endif
 
-      #define BTN_ENC           35
+      #define BTN_ENC           35  //              EXTRA BUTTON PINOUT ON BACK SIDE OF SCREEN 
       #define SD_DETECT_PIN     49
-      #define KILL_PIN          41
+      #define KILL_PIN          41  //              EXTRA BUTTON PINOUT ON BACK SIDE OF SCREEN 
 
       #if ENABLED(BQ_LCD_SMART_CONTROLLER)
         #define LCD_BACKLIGHT_PIN 39
