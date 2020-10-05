@@ -1,0 +1,47 @@
+******************************************************
+*****// Lightburn to LaserShark G-Code Editing \\*****
+******************************************************
+
+Place your lightburn generated gcode in this folder and run the CONVERT.bat
+
+backup first if needed.
+
+
+
+
+//Renames Lightburn *.GC to *.GCODE
+//*.GC ->  *.GCODE
+										fart -f *.gc *.GC *.GCODE. 
+
+//Feed Rates 
+//F ->[space]F
+										fart *.GCODE F " F"   
+
+//X Axis
+// G1X -> G1 X
+										fart *.GCODE G1X "G1 X"   
+
+//Y axis
+// G1Y -> G1 Y   
+										fart *.GCODE G1Y "G1 Y"
+
+//Laser Power
+// S -> \nM106 P1 S
+										fart -C *.GCODE S "\nM106 P1 S"
+
+//Hide Laser Values 0< but <1
+// M106 P1 S0. -> REPLACE  
+										fart *.GCODE "M106 P1 S0." "REPLACE"   
+
+//Laser Off
+// M106 P1 S0 -> M107 P1 
+										fart *.GCODE "M106 P1 S0" "M107 P1"
+
+//Hide Laser Values >0 but <1
+//REPLACE ->  M106 P1 S0.
+										fart *.GCODE "REPLACE" "M106 P1 S0." 
+
+
+
+
+

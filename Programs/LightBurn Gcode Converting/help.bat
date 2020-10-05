@@ -1,0 +1,1 @@
+cmd /k " cd C:\Users\Buzkill\Downloads\fart199b_win32  & fart -h
