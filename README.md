@@ -1,5 +1,5 @@
 # LaserShark
-A customized firmware for CNC/3D printers forked from [Marlin](https://github.com/MarlinFirmware/Marlin) 1.1.9.1, specificly tageted towards TTL/PWM driven lasers /w Tech Cooling. ie. 'Endurence Lasers' or other similar products.
+A customized firmware for CNC/3D printers based on [Marlin](https://github.com/MarlinFirmware/Marlin) 1.1.9.1, specificly tageted towards TTL/PWM driven lasers /w Tech Cooling. ie. 'Endurence Lasers' or other similar products.
 
 I started this project due to the fact that there seemed to be very little support for LCD controls and SD-Card Printing through GRBL and Marlin has had quite a bit. Plus my experience with 3D printers VS Lasers, it was a small jump to make. Not sure how it will turn out in the end but it's the journey that's important, not the destination!
 
